@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/joeshaw/envdecode"
 )
 
 type SplunkRequest struct {
@@ -13,6 +15,13 @@ type SplunkRequest struct {
 	Host       string `env:"SPLUNK_HOST,required",json:"host"`
 	Port       string `env:"SPLUNK_POST,default=8089",json:"port"`
 	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json",json:"output_type"`
+}
+
+func Init() (sr *SplunkRequest, err error) {
+	sr = new(SplunkRequest)
+	err = envdecode.Decode(&sr)
+
+	return
 }
 
 func (sr *SplunkRequest) Request(method, endpoint string, body io.Reader) (req *http.Request, err error) {
