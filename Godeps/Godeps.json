@@ -1,0 +1,14 @@
+{
+	"ImportPath": "github.com/jmervine/go-splunk-request",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v79",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "gopkg.in/jarcoal/httpmock.v1",
+			"Rev": "cf52904a3cf0f78f199ecade6a6df8e245d5b25a"
+		}
+	]
+}
