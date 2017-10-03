@@ -48,6 +48,36 @@ func TestSubmit(t *testing.T) {
 	}
 }
 
+func TestGet(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("GET", "https://splunk.example.com:8089/api/path?output_mode=json",
+		httpmock.NewStringResponder(200, `{}`))
+
+	sr := defaultRequest()
+
+	_, e := sr.Get("/api/path", nil)
+	if e != nil {
+		t.Error("Expected nil, got,", e)
+	}
+}
+
+func TestPost(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("POST", "https://splunk.example.com:8089/api/path?output_mode=json",
+		httpmock.NewStringResponder(200, `{}`))
+
+	sr := defaultRequest()
+
+	_, e := sr.Post("/api/path", nil)
+	if e != nil {
+		t.Error("Expected nil, got,", e)
+	}
+}
+
 func defaultRequest() *SplunkRequest {
 	return &SplunkRequest{
 		Username:   "username",
