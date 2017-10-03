@@ -17,11 +17,29 @@ type SplunkRequest struct {
 	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json",json:"output_type"`
 }
 
-func Init() (sr *SplunkRequest, err error) {
-	sr = new(SplunkRequest)
-	err = envdecode.Decode(&sr)
+func Init() (SplunkRequest, error) {
+	sr := SplunkRequest{}
+	err := envdecode.Decode(&sr)
 
-	return
+	return sr, err
+}
+
+func (sr *SplunkRequest) Get(endpoint string, body io.Reader) (resp *http.Response, err error) {
+	req, err := sr.Request("GET", endpoint, body)
+	if err != nil {
+		return nil, err
+	}
+
+	return sr.Submit(req)
+}
+
+func (sr *SplunkRequest) Post(endpoint string, body io.Reader) (resp *http.Response, err error) {
+	req, err := sr.Request("POST", endpoint, body)
+	if err != nil {
+		return nil, err
+	}
+
+	return sr.Submit(req)
 }
 
 func (sr *SplunkRequest) Request(method, endpoint string, body io.Reader) (req *http.Request, err error) {
