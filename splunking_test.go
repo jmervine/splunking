@@ -48,16 +48,18 @@ func TestSubmit(t *testing.T) {
 	}
 }
 
+// TODO: Also testing params handling, should be broken out in to it's own
+// test.
 func TestGet(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://splunk.example.com:8089/api/path?output_mode=json",
+	httpmock.RegisterResponder("GET", "https://splunk.example.com:8089/api/path?foo=bar&output_mode=somethingelse",
 		httpmock.NewStringResponder(200, `{}`))
 
 	sr := defaultRequest()
 
-	_, e := sr.Get("/api/path", nil)
+	_, e := sr.Get("/api/path?foo=bar&output_mode=somethingelse", nil)
 	if e != nil {
 		t.Error("Expected nil, got,", e)
 	}

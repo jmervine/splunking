@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 
 	"github.com/joeshaw/envdecode"
 )
@@ -53,8 +52,10 @@ func (sr *SplunkRequest) Request(method, endpoint string, body io.Reader) (req *
 	req.SetBasicAuth(sr.Username, sr.Password)
 	req.Header.Add("Accept", "application/json")
 
-	params := url.Values{}
-	params.Add("output_mode", sr.OutputMode)
+	params := req.URL.Query()
+	if params.Get("output_mode") == "" {
+		params.Add("output_mode", sr.OutputMode)
+	}
 
 	req.URL.RawQuery = params.Encode()
 
