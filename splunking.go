@@ -23,8 +23,8 @@ func Init() (SplunkRequest, error) {
 	return sr, err
 }
 
-func (sr *SplunkRequest) Get(endpoint string, body io.Reader) (resp *http.Response, err error) {
-	req, err := sr.Request("GET", endpoint, body)
+func (sr *SplunkRequest) simpleRequest(method, endpoint string, body io.Reader) (resp *http.Response, err error) {
+	req, err := sr.Request(method, endpoint, body)
 	if err != nil {
 		return nil, err
 	}
@@ -32,13 +32,16 @@ func (sr *SplunkRequest) Get(endpoint string, body io.Reader) (resp *http.Respon
 	return sr.Submit(req)
 }
 
-func (sr *SplunkRequest) Post(endpoint string, body io.Reader) (resp *http.Response, err error) {
-	req, err := sr.Request("POST", endpoint, body)
-	if err != nil {
-		return nil, err
-	}
+func (sr *SplunkRequest) Get(endpoint string, body io.Reader) (resp *http.Response, err error) {
+	return sr.simpleRequest("GET", endpoint, body)
+}
 
-	return sr.Submit(req)
+func (sr *SplunkRequest) Post(endpoint string, body io.Reader) (resp *http.Response, err error) {
+	return sr.simpleRequest("POST", endpoint, body)
+}
+
+func (sr *SplunkRequest) Delete(endpoint string, body io.Reader) (resp *http.Response, err error) {
+	return sr.simpleRequest("DELETE", endpoint, body)
 }
 
 func (sr *SplunkRequest) Request(method, endpoint string, body io.Reader) (req *http.Request, err error) {

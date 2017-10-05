@@ -80,6 +80,21 @@ func TestPost(t *testing.T) {
 	}
 }
 
+func TestDelete(t *testing.T) {
+	httpmock.Activate()
+	defer httpmock.DeactivateAndReset()
+
+	httpmock.RegisterResponder("DELETE", "https://splunk.example.com:8089/api/path?output_mode=json",
+		httpmock.NewStringResponder(200, `{}`))
+
+	sr := defaultRequest()
+
+	_, e := sr.Delete("/api/path", nil)
+	if e != nil {
+		t.Error("Expected nil, got,", e)
+	}
+}
+
 func defaultRequest() *SplunkRequest {
 	return &SplunkRequest{
 		Username:   "username",
