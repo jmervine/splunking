@@ -9,11 +9,11 @@ import (
 )
 
 type SplunkRequest struct {
-	Username   string `env:"SPLUNK_USERNAME,required",json:"username"`
-	Password   string `env:"SPLUNK_PASSWORD,required",json:"password"`
-	Host       string `env:"SPLUNK_HOST,required",json:"host"`
-	Port       string `env:"SPLUNK_POST,default=8089",json:"port"`
-	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json",json:"output_type"`
+	Username   string `env:"SPLUNK_USERNAME,required" json:"username"`
+	Password   string `env:"SPLUNK_PASSWORD,required" json:"password"`
+	Host       string `env:"SPLUNK_HOST,required" json:"host"`
+	Port       string `env:"SPLUNK_POST,default=8089" json:"port"`
+	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json" json:"output_type"`
 }
 
 func Init() (SplunkRequest, error) {

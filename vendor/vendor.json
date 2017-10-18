@@ -1,0 +1,17 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "veqG9LMm259hz95gY5xDx3QEcBE=",
+			"path": "github.com/joeshaw/envdecode",
+			"revision": "32118ea5f56d5358408e78d150be1843a695e35c"
+		},
+		{
+			"checksumSHA1": "Wx2FYL6OLgZ/9PF1nb+hhNoXcTo=",
+			"path": "gopkg.in/jarcoal/httpmock.v1",
+			"revision": "cf52904a3cf0f78f199ecade6a6df8e245d5b25a"
+		}
+	],
+	"rootPath": "github.com/jmervine/splunking"
+}
