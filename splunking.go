@@ -16,6 +16,7 @@ type SplunkRequest struct {
 	Password   string `env:"SPLUNK_PASSWORD,required" json:"password"`
 	Host       string `env:"SPLUNK_HOST,required" json:"host"`
 	Port       string `env:"SPLUNK_POST,default=8089" json:"port"`
+	Proto      string `env:"SPLUNK_PROTO,default=https" json:"proto"`
 	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json" json:"output_type"`
 }
 
@@ -24,18 +25,24 @@ type SplunkRequest struct {
 //    user:pass@host
 //    https://user:pass@host:port?output_mode=mode
 //
-// Default port is '8089' and default output_mode is 'json'. A blank protocol
-// will be prepended if one isn't include, and the protocol will be ingnored
-// in favor of https in all cases. This possibly should be changed at some point.
+// Default port is '8089' and default output_mode is 'json'. 'https' will be
+// prepended if a protocol isn't passed.
 func InitURL(str string) (sr SplunkRequest, err error) {
 	// Check for proto, it's required to parse username and password correctly
 	if !strings.HasPrefix(str, "https://") && !strings.HasPrefix(str, "http://") && !strings.HasPrefix(str, "//") {
-		str = "//" + str // and proto will do, it's not actually used
+		str = "https://" + str // default to https
 	}
 
 	u, err := url.Parse(str)
 	if err != nil {
 		return
+	}
+
+	// Ensure that proto is always http or https.
+	if u.Scheme == "http" {
+		sr.Proto = "http"
+	} else {
+		sr.Proto = "https"
 	}
 
 	if u.User == nil {
@@ -80,6 +87,11 @@ func InitURL(str string) (sr SplunkRequest, err error) {
 func Init() (SplunkRequest, error) {
 	sr := SplunkRequest{}
 	err := envdecode.Decode(&sr)
+
+	// Ensure that proto is always http or https.
+	if sr.Proto != "http" && sr.Proto != "https" {
+		sr.Proto = "https"
+	}
 
 	return sr, err
 }
@@ -132,5 +144,5 @@ func (sr *SplunkRequest) Submit(req *http.Request) (*http.Response, error) {
 }
 
 func (sr *SplunkRequest) Endpoint(path string) string {
-	return fmt.Sprintf("https://%s:%s%s", sr.Host, sr.Port, path)
+	return fmt.Sprintf("%s://%s:%s%s", sr.Proto, sr.Host, sr.Port, path)
 }

@@ -14,13 +14,13 @@ import (
 func TestInitURL(t *testing.T) {
 	assert := assert.New(t)
 
-	expect := SplunkRequest{"foo", "bar", "example.com", "9999", "xml"}
-	got, err := InitURL("https://foo:bar@example.com:9999?output_mode=xml")
+	expect := SplunkRequest{"foo", "bar", "example.com", "9999", "http", "xml"}
+	got, err := InitURL("http://foo:bar@example.com:9999?output_mode=xml")
 
 	assert.Nil(err)
 	assert.Equal(expect, got)
 
-	expect = SplunkRequest{"foo", "bar", "example.com", "8089", "json"}
+	expect = SplunkRequest{"foo", "bar", "example.com", "8089", "https", "json"}
 
 	// url.Parse will error without a proto, so this tests proto prepending
 	// in addition to default port and output_mode
@@ -94,6 +94,16 @@ func TestDelete(t *testing.T) {
 	assertResponse(t, resp, err, "at=DELETE")
 }
 
+func TestEndpoint(t *testing.T) {
+	assert := assert.New(t)
+
+	sr1 := SplunkRequest{"user1", "pass1", "host1.com", "9999", "http", ""}
+	sr2 := SplunkRequest{"user1", "pass1", "host1.com", "9999", "https", ""}
+
+	assert.Equal("http://host1.com:9999/foo/bar", sr1.Endpoint("/foo/bar"))
+	assert.Equal("https://host1.com:9999/foo/bar", sr2.Endpoint("/foo/bar"))
+}
+
 func mockRequest(method, url string) func() {
 	httpmock.Activate()
 	httpmock.RegisterResponder(method, url, httpmock.NewStringResponder(200, "at="+method))
@@ -107,6 +117,7 @@ func defaultRequest() *SplunkRequest {
 		Password:   "password",
 		Host:       "splunk.example.com",
 		Port:       "8089",
+		Proto:      "https",
 		OutputMode: "json",
 	}
 }
