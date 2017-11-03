@@ -1,7 +1,7 @@
 GOVENDOR=$(shell echo "$(GOBIN)/govendor")
 
 test: $(GOVENDOR) vet
-	govendor test +local
+	env $(shell cat .env.test) govendor test -v +local
 
 vet: $(GOVENDOR)
 	govendor vet +local

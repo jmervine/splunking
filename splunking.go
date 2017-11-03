@@ -84,6 +84,13 @@ func InitURL(str string) (sr SplunkRequest, err error) {
 	return
 }
 
+// Init loads configuration from the environment.
+// - SPLUNK_USERNAME=username
+// - SPLUNK_PASSWORD=password
+// - SPLUNK_HOST=splunk.example.com
+// - SPLUNK_PORT=8089        // default
+// - SPLUNK_PROTO=https      // default
+// - SPLUNK_OUTPUT_TYPE=json // default
 func Init() (SplunkRequest, error) {
 	sr := SplunkRequest{}
 	err := envdecode.Decode(&sr)
@@ -105,18 +112,23 @@ func (sr *SplunkRequest) simpleRequest(method, endpoint string, body io.Reader) 
 	return sr.Submit(req)
 }
 
+// Get wraps a simple http GET, setting up the request and calling submitting it.
 func (sr *SplunkRequest) Get(endpoint string, body io.Reader) (resp *http.Response, err error) {
 	return sr.simpleRequest("GET", endpoint, body)
 }
 
+// Post wraps an http POST, setting up the request and calling submitting it.
 func (sr *SplunkRequest) Post(endpoint string, body io.Reader) (resp *http.Response, err error) {
 	return sr.simpleRequest("POST", endpoint, body)
 }
 
+// Delete wraps an http DELETE, setting up the request and calling submitting it.
 func (sr *SplunkRequest) Delete(endpoint string, body io.Reader) (resp *http.Response, err error) {
 	return sr.simpleRequest("DELETE", endpoint, body)
 }
 
+// Request initializes a base request, building the endpoint, setting up auth,
+// adding the correct headers and including the output_type.
 func (sr *SplunkRequest) Request(method, endpoint string, body io.Reader) (req *http.Request, err error) {
 	endpoint = sr.Endpoint(endpoint)
 
@@ -138,11 +150,13 @@ func (sr *SplunkRequest) Request(method, endpoint string, body io.Reader) (req *
 	return
 }
 
+// Submit is the follow up to a Request call, executing the request properly.
 func (sr *SplunkRequest) Submit(req *http.Request) (*http.Response, error) {
 	client := &http.Client{}
 	return client.Do(req)
 }
 
+// Endpoint generates a base URL for http interations with Splunk.
 func (sr *SplunkRequest) Endpoint(path string) string {
 	return fmt.Sprintf("%s://%s:%s%s", sr.Proto, sr.Host, sr.Port, path)
 }

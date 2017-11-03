@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"testing"
 
@@ -40,6 +41,20 @@ func TestInitURL(t *testing.T) {
 
 	_, err = InitURL("https://foo:bar@")
 	assert.Equal(errors.New("Host is required"), err)
+}
+
+func TestInit(t *testing.T) {
+	// Ensure that .env.test is loaded
+	if os.Getenv("ENVIRONMENT") == "test" {
+		assert := assert.New(t)
+		expect := SplunkRequest{"username", "password", "splunk.example.com", "8089", "https", "json"}
+
+		got, err := Init()
+		assert.Nil(err)
+		assert.Equal(expect, got)
+	} else {
+		t.Skip("Missing environment, run with: 'make test'")
+	}
 }
 
 func TestRequest(t *testing.T) {
