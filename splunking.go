@@ -85,12 +85,13 @@ func InitURL(str string) (sr SplunkRequest, err error) {
 }
 
 // Init loads configuration from the environment.
-// - SPLUNK_USERNAME=username
-// - SPLUNK_PASSWORD=password
-// - SPLUNK_HOST=splunk.example.com
-// - SPLUNK_PORT=8089        // default
-// - SPLUNK_PROTO=https      // default
-// - SPLUNK_OUTPUT_TYPE=json // default
+//
+//     SPLUNK_USERNAME=username
+//     SPLUNK_PASSWORD=password
+//     SPLUNK_HOST=splunk.example.com
+//     SPLUNK_PORT=8089        // default
+//     SPLUNK_PROTO=https      // default
+//     SPLUNK_OUTPUT_TYPE=json // default
 func Init() (SplunkRequest, error) {
 	sr := SplunkRequest{}
 	err := envdecode.Decode(&sr)
