@@ -1,9 +1,12 @@
 package splunking
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/joeshaw/envdecode"
 )
@@ -14,6 +17,64 @@ type SplunkRequest struct {
 	Host       string `env:"SPLUNK_HOST,required" json:"host"`
 	Port       string `env:"SPLUNK_POST,default=8089" json:"port"`
 	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json" json:"output_type"`
+}
+
+// InitURL allows for initializing with a base url. Expected format examples
+// include:
+//    user:pass@host
+//    https://user:pass@host:port?output_mode=mode
+//
+// Default port is '8089' and default output_mode is 'json'. A blank protocol
+// will be prepended if one isn't include, and the protocol will be ingnored
+// in favor of https in all cases. This possibly should be changed at some point.
+func InitURL(str string) (sr SplunkRequest, err error) {
+	// Check for proto, it's required to parse username and password correctly
+	if !strings.HasPrefix(str, "https://") && !strings.HasPrefix(str, "http://") && !strings.HasPrefix(str, "//") {
+		str = "//" + str // and proto will do, it's not actually used
+	}
+
+	u, err := url.Parse(str)
+	if err != nil {
+		return
+	}
+
+	if u.User == nil {
+		err = errors.New("Username is required")
+		return
+	}
+
+	sr.Username = u.User.Username()
+	if sr.Username == "" {
+		err = errors.New("Username is required")
+		return
+	}
+
+	var ok bool
+	sr.Password, ok = u.User.Password()
+	if !ok || sr.Password == "" {
+		err = errors.New("Password is required")
+		return
+	}
+
+	split := strings.Split(u.Host, ":")
+	sr.Host = split[0]
+
+	if sr.Host == "" {
+		err = errors.New("Host is required")
+		return
+	}
+
+	sr.Port = "8089" // default port
+	if len(split) > 1 {
+		sr.Port = split[1]
+	}
+
+	sr.OutputMode = u.Query().Get("output_mode")
+	if sr.OutputMode == "" {
+		sr.OutputMode = "json"
+	}
+
+	return
 }
 
 func Init() (SplunkRequest, error) {

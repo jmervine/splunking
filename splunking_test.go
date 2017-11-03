@@ -1,6 +1,7 @@
 package splunking
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -9,6 +10,37 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/jarcoal/httpmock.v1"
 )
+
+func TestInitURL(t *testing.T) {
+	assert := assert.New(t)
+
+	expect := SplunkRequest{"foo", "bar", "example.com", "9999", "xml"}
+	got, err := InitURL("https://foo:bar@example.com:9999?output_mode=xml")
+
+	assert.Nil(err)
+	assert.Equal(expect, got)
+
+	expect = SplunkRequest{"foo", "bar", "example.com", "8089", "json"}
+
+	// url.Parse will error without a proto, so this tests proto prepending
+	// in addition to default port and output_mode
+	got, err = InitURL("foo:bar@example.com")
+
+	assert.Nil(err)
+	assert.Equal(expect, got)
+
+	_, err = InitURL("https://example.com")
+	assert.Equal(errors.New("Username is required"), err)
+
+	_, err = InitURL("https://:bar@example.com")
+	assert.Equal(errors.New("Username is required"), err)
+
+	_, err = InitURL("https://foo:@example.com")
+	assert.Equal(errors.New("Password is required"), err)
+
+	_, err = InitURL("https://foo:bar@")
+	assert.Equal(errors.New("Host is required"), err)
+}
 
 func TestRequest(t *testing.T) {
 	assert := assert.New(t)
