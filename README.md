@@ -41,7 +41,7 @@ func main() {
 
     // ... do stuff with request
 
-    resp, err := splunking.Submit(req)
+    resp, err := client.Submit(req)
     if err != nil {
         panic(err)
     }
