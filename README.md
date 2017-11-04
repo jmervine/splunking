@@ -33,7 +33,15 @@ func main() {
         panic(err)
     }
 
-    // Submit a request.
+    // Basic request
+    resp, err := client.Get("/api/path", nil)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf("%+v\n", resp)
+
+    // Advanced request handling
     req, err := client.Request("GET", "/api/path", nil)
     if err != nil {
         panic(err)
@@ -41,7 +49,7 @@ func main() {
 
     // ... do stuff with request
 
-    resp, err := client.Submit(req)
+    resp, err = client.Submit(req)
     if err != nil {
         panic(err)
     }
