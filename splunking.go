@@ -22,8 +22,8 @@ type SplunkRequest struct {
 
 // InitURL allows for initializing with a base url. Expected format examples
 // include:
-//    user:pass@host
-//    https://user:pass@host:port?output_mode=mode
+//    InitURL("user:pass@host")
+//    InitURL("https://user:pass@host:port?output_mode=mode")
 //
 // Default port is '8089' and default output_mode is 'json'. 'https' will be
 // prepended if a protocol isn't passed.
