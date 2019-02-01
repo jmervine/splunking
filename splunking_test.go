@@ -26,7 +26,7 @@ func TestInitURL(t *testing.T) {
 
 	// url.Parse will error without a proto, so this tests proto prepending
 	// in addition to default port and output_mode
-	got, err = InitURL("foo:bar@example.com")
+	got, err = InitURL("foo:bar@example.com:8089")
 
 	assert.Nil(err)
 	assert.Equal(expect, got)
@@ -81,7 +81,7 @@ func TestRequest(t *testing.T) {
 }
 
 func ExampleSplunkRequest_Request() {
-	sr, err := InitURL("https://username:password@splunk.example.com")
+	sr, err := InitURL("https://username:password@splunk.example.com:8089")
 	if err != nil {
 		panic(err)
 	}
@@ -200,7 +200,7 @@ func TestEndpoint(t *testing.T) {
 	assert := assert.New(t)
 
 	sr1 := SplunkRequest{"user1", "pass1", "host1.com", "9999", "http", ""}
-	sr2 := SplunkRequest{"user1", "pass1", "host1.com", "9999", "https", ""}
+	sr2 := SplunkRequest{"user1", "pass1", "host1.com:9999", "", "https", ""}
 
 	assert.Equal("http://host1.com:9999/foo/bar", sr1.Endpoint("/foo/bar"))
 	assert.Equal("https://host1.com:9999/foo/bar", sr2.Endpoint("/foo/bar"))
@@ -214,7 +214,7 @@ func ExampleSplunkRequest_Endpoint() {
 
 	endpoint := sr.Endpoint("/api/path")
 	fmt.Println(endpoint)
-	// output: https://splunk.example.com:8089/api/path
+	// output: https://splunk.example.com/api/path
 }
 
 func mockRequest(method, url string) func() {

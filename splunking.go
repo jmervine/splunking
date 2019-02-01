@@ -15,7 +15,7 @@ type SplunkRequest struct {
 	Username   string `env:"SPLUNK_USERNAME,required" json:"username"`
 	Password   string `env:"SPLUNK_PASSWORD,required" json:"password"`
 	Host       string `env:"SPLUNK_HOST,required" json:"host"`
-	Port       string `env:"SPLUNK_PORT,default=8089" json:"port"`
+	Port       string `env:"SPLUNK_PORT" json:"port"`
 	Proto      string `env:"SPLUNK_PROTO,default=https" json:"proto"`
 	OutputMode string `env:"SPLUNK_OUTPUT_TYPE,default=json" json:"output_type"`
 }
@@ -25,8 +25,8 @@ type SplunkRequest struct {
 //    InitURL("user:pass@host")
 //    InitURL("https://user:pass@host:port?output_mode=mode")
 //
-// Default port is '8089' and default output_mode is 'json'. 'https' will be
-// prepended if a protocol isn't passed.
+// Default output_mode is 'json'. 'https' will be prepended if a protocol isn't
+// passed.
 func InitURL(str string) (sr SplunkRequest, err error) {
 	// Check for proto, it's required to parse username and password correctly
 	if !strings.HasPrefix(str, "https://") && !strings.HasPrefix(str, "http://") && !strings.HasPrefix(str, "//") {
@@ -71,7 +71,6 @@ func InitURL(str string) (sr SplunkRequest, err error) {
 		return
 	}
 
-	sr.Port = "8089" // default port
 	if len(split) > 1 {
 		sr.Port = split[1]
 	}
@@ -89,7 +88,7 @@ func InitURL(str string) (sr SplunkRequest, err error) {
 //     SPLUNK_USERNAME=username
 //     SPLUNK_PASSWORD=password
 //     SPLUNK_HOST=splunk.example.com
-//     SPLUNK_PORT=8089        // default
+//     SPLUNK_PORT=8089        // optional, default empty
 //     SPLUNK_PROTO=https      // default
 //     SPLUNK_OUTPUT_TYPE=json // default
 func Init() (SplunkRequest, error) {
@@ -159,5 +158,9 @@ func (sr *SplunkRequest) Submit(req *http.Request) (*http.Response, error) {
 
 // Endpoint generates a base URL for http interations with Splunk.
 func (sr *SplunkRequest) Endpoint(path string) string {
+	if sr.Port == "" {
+		return fmt.Sprintf("%s://%s%s", sr.Proto, sr.Host, path)
+	}
+
 	return fmt.Sprintf("%s://%s:%s%s", sr.Proto, sr.Host, sr.Port, path)
 }
