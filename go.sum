@@ -1,0 +1,10 @@
+github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495 h1:6IyqGr3fnd0tM3YxipK27TUskaOVUjU2nG45yzwcQKY=
+github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/joeshaw/envdecode v0.0.0-20170502020559-6326cbed175e h1:OjHamqOoW5L+YgnzK3JBoMCLLhximcwxDFvjLqXeeJ0=
+github.com/joeshaw/envdecode v0.0.0-20170502020559-6326cbed175e/go.mod h1:Q+alOFAXgW5SrcfMPt/G4B2oN+qEcQRJjkn/f4mKL04=
+github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/stretchr/testify v0.0.0-20171018052257-2aa2c176b9da h1:/GRWXYJLcWpnjmFCtD64tuNT1YteX36zELue/SXxl5Y=
+github.com/stretchr/testify v0.0.0-20171018052257-2aa2c176b9da/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
+gopkg.in/jarcoal/httpmock.v1 v1.0.0-20170412085702-cf52904a3cf0 h1:wQvcxZY1FNzBQm8MA4aUNdK4nozflCum8cqis1bUOw4=
+gopkg.in/jarcoal/httpmock.v1 v1.0.0-20170412085702-cf52904a3cf0/go.mod h1:d3R+NllX3X5e0zlG1Rful3uLvsGC/Q3OHut5464DEQw=
