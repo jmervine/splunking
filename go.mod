@@ -1,7 +1,5 @@
 module github.com/jmervine/splunking
 
-go 1.12
-
 require (
 	github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495
 	github.com/joeshaw/envdecode v0.0.0-20170502020559-6326cbed175e
